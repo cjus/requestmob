@@ -1,5 +1,5 @@
-# requestmob
-Network Request Mob - load generation tool
+# Request Mob
+The angry mob load generation tool
 
 ![](./mob.png)
 
