@@ -1,7 +1,7 @@
 # requestmob
 Network Request Mob - load generation tool
 
-Picture an angry mob of characters all making demands... That's RequestMob.
+![](./mob.png)
 
 You create mob "actors" who represent a particular type of network client.
 
