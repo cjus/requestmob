@@ -1,0 +1,31 @@
+{
+  "name": "requestmob",
+  "version": "0.1.0",
+  "description": "Network Request Mob - load generation tool",
+  "license": "MIT",
+  "author": "Carlos Justiniano <carlos.justiniano@gmail.com>",
+  "keywords": [
+    "http",
+    "websocket",
+    "loadtest",
+    "tool"
+  ],
+  "preferGlobal": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cjus/requestmob.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cjus/requestmob/issues"
+  },
+  "homepage": "https://github.com/cjus/requestmob#readme",
+  "dependencies": {
+    "ws": "5.0.0"
+  },
+  "bin": {
+    "requestmob": "requestmob.js"
+  }
+}
