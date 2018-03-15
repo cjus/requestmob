@@ -25,7 +25,7 @@ class Program {
   * @return {undefined}
   */
   constructor() {
-    config.actionsPath = require('path').join(__dirname, '/actions');
+    config.actorsPath = require('path').join(__dirname, '/actors');
     processor.init(config);
   }
 
@@ -36,13 +36,13 @@ class Program {
   */
   displayHelp() {
     console.log(`requestmob - Request Mob ${version}`);
-    console.log('Usage: requestmob command1 command2 ...');
+    console.log('Usage: requestmob actor1 actor2 ...');
     console.log('');
     console.log('A tool for generating network request load');
     console.log('');
-    console.log('Command IDs:');
-    processor.getCommandlist().forEach((command) => {
-      console.log(`  ${command.name} - ${command.description}`);
+    console.log('Actor IDs:');
+    processor.getCommandlist().forEach((actor) => {
+      console.log(`  ${actor.name} - ${actor.description}`);
     });
     console.log('');
   }
@@ -80,10 +80,10 @@ class Program {
       // console.log(`Worker ${process.pid} started`);
 
       let args = process.argv.slice(2);
-      for (let command of args) {
-        console.log(`\nProcessing: ${command}`);
+      for (let actorName of args) {
+        console.log(`\nProcessing: ${actorName}`);
         await Delay.sleep(COMMAND_DELAY);
-        let result = await processor.executeCommand(command, stor);
+        let result = await processor.executeCommand(actorName, stor);
         console.log(JSON.stringify(result, null, 2));
       }
       this.exitApp();

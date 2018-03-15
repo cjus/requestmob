@@ -1,11 +1,11 @@
 'use strict';
 
 /**
-* @name StorFlush
-* @summary Flush local stor contents
+* @name StorView
+* @summary View local stor contents
 * @return {undefined}
 */
-module.exports = class StorFlush {
+module.exports = class StorView {
   /**
   * @name constructor
   * @description class contructor
@@ -20,19 +20,17 @@ module.exports = class StorFlush {
   * @return {string} description - module description
   */
   getDescription() {
-    return 'Flush local stor contents';
+    return 'View local stor contents';
   }
 
   /**
   * @name execute
   * @summary execute module
-  * @param {object} http - http object
-  * @param {object} ws - ws object
   * @param {object} stor - storage object
   * @return {object} json - json return
   */
-  async execute(http, ws, stor) {
-    stor.flush();
+  async execute(stor) {
+    stor.view();
     return {};
   }
 }

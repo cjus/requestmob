@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/cjus/requestmob#readme",
   "dependencies": {
+    "bluebird": "3.5.1",
     "ws": "5.0.0"
   },
   "bin": {
