@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 'use strict';
 
+const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+
 const version = require('./package.json').version;
 const config = require('./config');
 const processor = require('./lib/processor');
@@ -52,6 +56,7 @@ class Program {
     if (!stor.load('./requestmob.json')) {
       stor.save();
     }
+    stor.set('config', config);
 
     if (process.argv.length < 3) {
       this.displayHelp();
@@ -59,17 +64,30 @@ class Program {
       return;
     }
 
-    stor.set('config', config);
+    if (cluster.isMaster) {
+      console.log(`Master ${process.pid} is running`);
 
-    let args = process.argv.slice(2);
-    for (let command of args) {
-      console.log(`\nProcessing: ${command}`);
-      await Delay.sleep(COMMAND_DELAY);
-      let result = await processor.executeCommand(command, stor);
-      console.log(JSON.stringify(result, null, 2));
+      let totalWorkers = numCPUs * 2;
+      for (let i = 0; i < totalWorkers; i++) {
+        cluster.fork();
+      }
+
+      cluster.on('exit', (worker, code, signal) => {
+        // console.log(`worker ${worker.process.pid} died`);
+      });
+    } else {
+      // worker
+      // console.log(`Worker ${process.pid} started`);
+
+      let args = process.argv.slice(2);
+      for (let command of args) {
+        console.log(`\nProcessing: ${command}`);
+        await Delay.sleep(COMMAND_DELAY);
+        let result = await processor.executeCommand(command, stor);
+        console.log(JSON.stringify(result, null, 2));
+      }
+      this.exitApp();
     }
-
-    this.exitApp();
   }
 
   /**
