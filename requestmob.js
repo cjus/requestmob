@@ -4,14 +4,14 @@
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
-
 const version = require('./package.json').version;
 const config = require('./config');
+const Stats = require('./lib/stats');
 const processor = require('./lib/processor');
-const stor = require('./lib/stor');
 const Delay = require('./lib/delay');
-const COMMAND_DELAY = 1000; // 1 second
 const EXIT_DELAY = 250;
+
+let stats = new Stats();
 
 /**
 * @name Program
@@ -36,7 +36,7 @@ class Program {
   */
   displayHelp() {
     console.log(`requestmob - Request Mob ${version}`);
-    console.log('Usage: requestmob actor1 actor2 ...');
+    console.log('Usage: requestmob durationInSeconds actor1 actor2 ...');
     console.log('');
     console.log('A tool for generating network request load');
     console.log('');
@@ -53,38 +53,54 @@ class Program {
   * @return {undefined}
   */
   async main() {
-    if (!stor.load('./requestmob.json')) {
-      stor.save();
-    }
-    stor.set('config', config);
-
-    if (process.argv.length < 3) {
+    let args = process.argv.slice(2);
+    if (args.length < 2) {
       this.displayHelp();
       this.exitApp();
       return;
     }
+    let duration = parseInt(args[0]);
+    if (isNaN(duration)) {
+      this.displayHelp();
+      console.log('Error, first parameter must be a number of seconds');
+      this.exitApp();
+      return;
+    }
+    args.shift();
 
     if (cluster.isMaster) {
-      console.log(`Master ${process.pid} is running`);
+      stats.start();
 
       let totalWorkers = numCPUs * 2;
       for (let i = 0; i < totalWorkers; i++) {
-        cluster.fork();
+        let worker = cluster.fork();
+        worker.on('message', (message) => {
+          stats.log(message.actorName, message.requestID, message.type);
+        });
       }
 
       cluster.on('exit', (worker, code, signal) => {
         // console.log(`worker ${worker.process.pid} died`);
       });
+
+      setTimeout(() => {
+        process.exit(0);
+      }, duration * 1000);
+
+      process.on('exit', () => {
+        stats.end();
+        let statsObj = stats.getStats();
+        console.log(JSON.stringify(statsObj, null, 2));
+      });
     } else {
       // worker
       // console.log(`Worker ${process.pid} started`);
-
-      let args = process.argv.slice(2);
       for (let actorName of args) {
-        console.log(`\nProcessing: ${actorName}`);
-        await Delay.sleep(COMMAND_DELAY);
-        let result = await processor.executeCommand(actorName, stor);
-        console.log(JSON.stringify(result, null, 2));
+        try {
+          processor.executeCommand(actorName);
+        } catch (e) {
+          console.log(`Unable to invoke actor ${actorName}`);
+        }
       }
       this.exitApp();
     }
@@ -97,7 +113,6 @@ class Program {
   */
   async exitApp() {
     await Delay.sleep(EXIT_DELAY);
-    stor.save();
     process.exit();
   }
 }

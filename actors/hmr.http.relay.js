@@ -4,11 +4,11 @@ const Actor = require('./actor');
 const ServerRequest = require('../lib/server-request');
 
 /**
-* @name HydraHealth
-* @summary Call Hydra Health endpoint
+* @name HMRHttpRelay
+* @summary Call HMRHttpRelay endpoint
 * @return {undefined}
 */
-module.exports = class HydraHealth extends Actor {
+module.exports = class HMRHttpRelay extends Actor {
   /**
   * @name constructor
   * @description class contructor
@@ -24,7 +24,7 @@ module.exports = class HydraHealth extends Actor {
   * @return {string} description - module description
   */
   getDescription() {
-    return 'Call Hydra Health endpoint';
+    return 'Call HMR HTTP reply endpoint';
   }
 
   /**
@@ -43,10 +43,13 @@ module.exports = class HydraHealth extends Actor {
         host: 'localhost',
         port: 5353,
         method: 'get',
-        path: '/v1/router/health'
+        path: '/v1/hmr/relay'
       });
       this.logStat(actorName, 'process', requestID);
     } catch (e) {
+      result = {
+        error: e
+      };
       this.logStat(actorName, 'error', requestID);
     }
   }
