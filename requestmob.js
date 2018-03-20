@@ -10,6 +10,7 @@ const Stats = require('./lib/stats');
 const processor = require('./lib/processor');
 const Delay = require('./lib/delay');
 const EXIT_DELAY = 250;
+const GRACEFUL_DELAY = 10000;
 
 let stats = new Stats();
 
@@ -71,7 +72,8 @@ class Program {
     if (cluster.isMaster) {
       stats.start();
 
-      let totalWorkers = numCPUs * 2;
+      let totalWorkers = numCPUs;
+      console.log(`Creating ${totalWorkers} worker processes...`);
       for (let i = 0; i < totalWorkers; i++) {
         let worker = cluster.fork();
         worker.on('message', (message) => {
@@ -84,10 +86,14 @@ class Program {
       });
 
       setTimeout(() => {
-        process.exit(0);
+        console.log('\nTests completed. Starting graceful shutdown.');
+        setTimeout(() => {
+          process.exit(0);
+        }, GRACEFUL_DELAY)
       }, duration * 1000);
 
       process.on('exit', () => {
+        console.log('\nGenerating report: ');
         stats.end();
         let statsObj = stats.getStats();
         console.log(JSON.stringify(statsObj, null, 2));
@@ -95,14 +101,15 @@ class Program {
     } else {
       // worker
       // console.log(`Worker ${process.pid} started`);
+      let pCount = 0;
       for (let actorName of args) {
         try {
+          console.log(`  starting worker (${actorName})`);
           processor.executeCommand(actorName);
         } catch (e) {
           console.log(`Unable to invoke actor ${actorName}`);
         }
       }
-      this.exitApp();
     }
   }
 
