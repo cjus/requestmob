@@ -31,5 +31,27 @@ module.exports = class Actor {
     process.send({ actorName, type, requestID });
   }
 
+  /**
+   * @name doForDuration
+   * @description perform an action for the length of duration at specific intervals
+   * @param {number} duration - duration in milli-seconds
+   * @param {number} interval - interval in milli-seconds per loop
+   * @param {function} callback - function to clal each interval
+   * @return {object} promise
+   */
+  doForDuration(duration, interval, callback) {
+    return new Promise((resolve, _reject) => {
+      let startTime = (new Date().getTime() / 1000) | 0;
+      let timerHandle = setInterval(() => {
+        let now = (new Date().getTime() / 1000) | 0;
+        if (now > (startTime + (duration / 1000))) {
+          clearInterval(timerHandle);
+          resolve();
+        } else {
+          callback();
+        }
+      }, interval);
+    });
+  }
 }
 
