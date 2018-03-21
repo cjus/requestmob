@@ -6,10 +6,11 @@ module.exports = class Actor {
   /**
   * @name constructor
   * @description class contructor
+  * @param {object} config - config object
   * @return {undefined}
   */
-  constructor() {
-
+  constructor(config) {
+    this.config = config;
   }
 
   /**
@@ -19,6 +20,15 @@ module.exports = class Actor {
   */
   getRequestID() {
     return uuid.v4();
+  }
+
+  /**
+  * @name getDescription
+  * @summary return module description
+  * @return {string} description - module description
+  */
+  getDescription() {
+    return this.config.description;
   }
 
   /**
@@ -36,7 +46,7 @@ module.exports = class Actor {
    * @description perform an action for the length of duration at specific intervals
    * @param {number} duration - duration in milli-seconds
    * @param {number} interval - interval in milli-seconds per loop
-   * @param {function} callback - function to clal each interval
+   * @param {function} callback - function to call each interval
    * @return {object} promise
    */
   doForDuration(duration, interval, callback) {

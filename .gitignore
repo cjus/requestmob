@@ -3,4 +3,4 @@ scratch.*
 node_modules
 config.json
 requestmob.json
-
+.vscode
