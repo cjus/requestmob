@@ -13,19 +13,11 @@ module.exports = class HMRWsRelay extends Actor {
   /**
   * @name constructor
   * @description class contructor
+  * @param {object} config - config object
   * @return {undefined}
   */
-  constructor() {
-    super();
-  }
-
-  /**
-  * @name getDescription
-  * @summary return module description
-  * @return {string} description - module description
-  */
-  getDescription() {
-    return 'Call HMR websocket reply endpoint';
+  constructor(config) {
+    super(config);
   }
 
   /**
@@ -50,7 +42,7 @@ module.exports = class HMRWsRelay extends Actor {
     });
 
     try {
-      await wsClient.open('ws://localhost:5353', messageHandler);
+      await wsClient.open(this.config.wsTarget, messageHandler);
       this.logStat(actorName, 'request', msg.mid);
       wsClient.sendMessage(JSON.stringify(msg));
     } catch (e) {

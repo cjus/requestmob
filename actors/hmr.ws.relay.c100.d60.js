@@ -15,21 +15,12 @@ module.exports = class HMRWsRelay100Cients60Seconds extends Actor {
   /**
   * @name constructor
   * @description class contructor
+  * @param {object} config - config object
   * @return {undefined}
   */
-  constructor() {
-    super();
-
+  constructor(config) {
+    super(config);
     this.wsClients = [];
-  }
-
-  /**
-  * @name getDescription
-  * @summary return module description
-  * @return {string} description - module description
-  */
-  getDescription() {
-    return 'Call HMR websocket reply endpoint using 100 clients for 60 seconds';
   }
 
   /**
@@ -49,7 +40,7 @@ module.exports = class HMRWsRelay100Cients60Seconds extends Actor {
     for (let i of range) {
       let client = new WSClient();
       this.wsClients.push(client);
-      await client.open('ws://localhost:5353', messageHandler);
+      await client.open(this.config.wsTarget, messageHandler);
     }
 
     await this.doForDuration(DURATION, 1000, () => {

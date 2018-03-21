@@ -12,19 +12,11 @@ module.exports = class HydraHealth extends Actor {
   /**
   * @name constructor
   * @description class contructor
+  * @param {object} config - config object
   * @return {undefined}
   */
-  constructor() {
-    super();
-  }
-
-  /**
-  * @name getDescription
-  * @summary return module description
-  * @return {string} description - module description
-  */
-  getDescription() {
-    return 'Call Hydra Health endpoint';
+  constructor(config) {
+    super(config);
   }
 
   /**
@@ -40,8 +32,8 @@ module.exports = class HydraHealth extends Actor {
     try {
       this.logStat(actorName, 'request', requestID);
       result = await serverRequest.send({
-        host: 'localhost',
-        port: 5353,
+        host: this.config.host,
+        port: this.config.port,
         method: 'get',
         path: '/v1/router/health'
       });
