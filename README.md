@@ -33,7 +33,7 @@ docker run --rm -it \
   cjus/requestmob:0.1.5 "$@"
 ```
 
-In both cases make sure that the directory where you execute the requestmob command contains both a config directory (with a config.json file) and an `actors` subdirectory with your test scripts.
+In both cases make sure that the directory where you execute the requestmob command contains both a `config` directory (with a config.json file) and an `actors` subdirectory with your test scripts.
 
 ```
 .
