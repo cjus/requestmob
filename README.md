@@ -14,6 +14,39 @@ For example, here we execute an actor call `hydra.health`:
 $ node requestMob 10 hydra.health
 ```
 
+## Other run options
+
+You can install requestmob globally using:
+
+```shell
+$ npm install -g requestmob
+```
+
+Or you can run requestmob via a Docker container using the `requestmob` shell script which you can copy to /usr/bin/local or execute directly.
+
+The requestmob script just does this:
+
+```shell
+docker run --rm -it \
+  -v $(pwd)/actors:/usr/src/app/actors \
+  -v $(pwd)/config:/usr/src/app/config \
+  cjus/requestmob:0.1.5 "$@"
+```
+
+In both cases make sure that the directory where you execute the requestmob command contains both a `config` directory (with a config.json file) and an `actors` subdirectory with your test scripts.
+
+```
+.
+├── actors
+│   ├── actor.js
+│   ├── hmr.http.relay.js
+│   ├── hmr.ws.relay.c100.d60.js
+│   ├── hmr.ws.relay.js
+│   └── hydra.health.js
+└── config
+    └── config.json
+```
+
 ## Building custom actors
 
 An actor is a node script which sits inside of the actors subdirectory and which derives from the actor.js base class.
