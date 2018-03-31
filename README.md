@@ -22,7 +22,16 @@ You can install requestmob globally using:
 $ npm install -g requestmob
 ```
 
-Or you can run requestmob via a docker container using the `reqestmob` shell script which you can copy to /usr/bin/local or execute directly.
+Or you can run requestmob via a Docker container using the `requestmob` shell script which you can copy to /usr/bin/local or execute directly.
+
+The requestmob script just does this:
+
+```shell
+docker run --rm -it \
+  -v $(pwd)/actors:/usr/src/app/actors \
+  -v $(pwd)/config:/usr/src/app/config \
+  cjus/requestmob:0.1.5 "$@"
+```
 
 In both cases make sure that the directory where you execute the requestmob command contains both a config directory (with a config.json file) and an `actors` subdirectory with your test scripts.
 
