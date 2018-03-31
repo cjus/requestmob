@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+docker run --rm -it \
+  -v $(pwd)/actors:/usr/src/app/actors \
+  cjus/requestmob:0.1.4 "$@"
+
