@@ -58,7 +58,6 @@ module.exports = class HMRWsRelay100Cients60Seconds extends Actor {
           idx++;
         }
       } catch (err) {
-        console.log('err', err);
         this.logStat(actorName, 'error', msg.mid);
       }
     });

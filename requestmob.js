@@ -13,6 +13,7 @@ const EXIT_DELAY = 250;
 const GRACEFUL_DELAY = 10000;
 
 let stats = new Stats();
+let QUITE_MODE = false;
 
 /**
 * @name Program
@@ -37,7 +38,9 @@ class Program {
   */
   displayHelp() {
     console.log(`requestmob - Request Mob ${version}`);
-    console.log('Usage: requestmob durationInSeconds actor1 actor2 ...');
+    console.log('Usage: requestmob [-q] durationInSeconds actor1 actor2 ...');
+    console.log('       -q: optional quite mode - only output results');
+    console.log('       durationInSeconds: total duration for all tests to execute');
     console.log('');
     console.log('A tool for generating network request load');
     console.log('');
@@ -45,7 +48,7 @@ class Program {
     processor.getCommandlist().forEach((actor) => {
       console.log(`  ${actor.name} - ${actor.description}`);
     });
-    console.log('');
+    console.log(' ');
   }
 
   /**
@@ -55,6 +58,10 @@ class Program {
   */
   async main() {
     let args = process.argv.slice(2);
+    if (args[0] === '-q') {
+      QUITE_MODE = true;
+      args.shift();
+    }
     if (args.length < 2) {
       this.displayHelp();
       this.exitApp();
@@ -73,7 +80,7 @@ class Program {
       stats.start();
 
       let totalWorkers = numCPUs;
-      console.log(`Creating ${totalWorkers} worker processes...`);
+      (!QUITE_MODE) && console.log(`Creating ${totalWorkers} worker processes...`);
       for (let i = 0; i < totalWorkers; i++) {
         let worker = cluster.fork();
         worker.on('message', (message) => {
@@ -86,28 +93,27 @@ class Program {
       });
 
       setTimeout(() => {
-        console.log('\nTests completed. Starting graceful shutdown.');
+        (!QUITE_MODE) && console.log('\nTests completed. Starting graceful shutdown.');
         setTimeout(() => {
           process.exit(0);
         }, GRACEFUL_DELAY)
       }, duration * 1000);
 
       process.on('exit', () => {
-        console.log('\nGenerating report: ');
+        (!QUITE_MODE) && console.log('\nGenerating report: ');
         stats.end();
         let statsObj = stats.getStats();
         console.log(JSON.stringify(statsObj, null, 2));
       });
     } else {
       // worker
-      // console.log(`Worker ${process.pid} started`);
       let pCount = 0;
       for (let actorName of args) {
         try {
-          console.log(`  starting worker (${actorName})`);
+          (!QUITE_MODE) && console.log(`  starting worker (${actorName})`);
           processor.executeCommand(actorName);
         } catch (e) {
-          console.log(`Unable to invoke actor ${actorName}`);
+          (!QUITE_MODE) && console.log(`Unable to invoke actor ${actorName}`);
         }
       }
     }
