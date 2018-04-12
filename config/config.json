@@ -1,7 +1,7 @@
 {
   "hmr.http.relay": {
     "description": "Call HMR HTTP relay endpoint",
-    "host": "localhost",
+    "host": "http://localhost",
     "port": 5353
   },
   "hmr.ws.relay": {
@@ -14,7 +14,7 @@
   },
   "hydra.health": {
     "description": "Call Hydra Health endpoint",
-    "host": "localhost",
+    "host": "http://localhost",
     "port": 5353
   }
 }
