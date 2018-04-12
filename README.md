@@ -78,3 +78,14 @@ Each actor script requires a class with two functions: 1) constructor() 2) execu
 
 A config entry consist of a named branch - using the name of the actor script (minus the .js extension) and an object containing a description and any other keys the actor requires.
 
+## Actor runtime execution
+
+While an actor is running it has access to a special property in its process environment.
+
+```js
+  let workerID = process.env['WORKER_ID']);
+```
+
+The workerID is an index into a list of CPU cores. Each actor runs on a separate core and thus has a different workerID. This is useful when you need a unique base index to differentiate between concurrent execution of tests.
+
+
