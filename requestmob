@@ -2,5 +2,5 @@
 docker run --rm \
   -v $(pwd)/actors:/usr/src/app/actors \
   -v $(pwd)/config:/usr/src/app/config \
-  cjus/requestmob:0.1.6 "$@"
+  flywheelsports/requestmob:0.1.10 "$@"
 
