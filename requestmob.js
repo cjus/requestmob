@@ -82,7 +82,9 @@ class Program {
       let totalWorkers = numCPUs;
       (!QUITE_MODE) && console.log(`Creating ${totalWorkers} worker processes...`);
       for (let i = 0; i < totalWorkers; i++) {
-        let worker = cluster.fork();
+        let worker = cluster.fork({
+          WORKER_ID: i
+        });
         worker.on('message', (message) => {
           stats.log(message.actorName, message.requestID, message.type);
         });
@@ -107,7 +109,6 @@ class Program {
       });
     } else {
       // worker
-      let pCount = 0;
       for (let actorName of args) {
         try {
           (!QUITE_MODE) && console.log(`  starting worker (${actorName})`);
