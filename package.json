@@ -1,6 +1,6 @@
 {
   "name": "requestmob",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "Network Request Mob - load generation tool",
   "license": "MIT",
   "author": "Carlos Justiniano <carlos.justiniano@gmail.com>",
