@@ -4,7 +4,7 @@ The angry mob load generation tool
 ![](./mob.png)
 
 Request Mob is a load generation / testing tool. As a command line tool it will execute test scripts (called actors) on every CPU core on the machine it runs on.
-A mob "actor" is a script which who represent a particular type of network client. That client might be an HTTP or WebSocket client or both if you wish.
+A mob "actor" is a script which represents a particular type of network client. That client might be an HTTP or WebSocket client or both if you wish.
 
 You execute request mob by first specfiying the duration of the test in seconds.  The parameters that follow indicate the name of the actors you'd like to execute during the test duration.
 
